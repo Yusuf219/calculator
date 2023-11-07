@@ -8,10 +8,12 @@ let secondNumber = undefined;
 let operator = undefined;
 let finalAnswer = undefined;
 let legacyOperator = undefined;
+let operandPressed = undefined;
 
 let atFirstNumber = true;
 let screenExtraShow = false;
 let operationComplete = false;
+let completeToOperand = false;
 
 buttons.forEach(button => {
     button.addEventListener("click", () => inputNumber(button.textContent));
@@ -41,7 +43,9 @@ function clearAll() {
     operator = undefined;
     finalAnswer = undefined;
     legacyOperator = undefined;
+    operandPressed = undefined;
 
+    completeToOperand = false;
     atFirstNumber = true;
     screenExtraShow = false;
     operationComplete = false;
@@ -64,6 +68,8 @@ function inputNumber(number) {
         firstNumber = finalAnswer;
         finalAnswer = undefined;
         secondNumber = undefined;
+        operandPressed = undefined;
+        completeToOperand = false;
     }
     if (screenBottom.textContent === "0" && number !== "." && screenExtraShow === false) {
         screenBottom.style.opacity = 1;
@@ -79,7 +85,21 @@ function inputOperator(operand) {
     const screenBottom = document.querySelector(".screen-bottom")
     const screenExtra = document.querySelector(".screen-extra")
     const lastCharacter = screenBottom.textContent.charAt(screenBottom.textContent.length - 1)
+    operator = operand
+    operandPressed = operand
     operators = ["÷", "×", "+", "-", "="]
+    if (completeToOperand === true) {
+        completeToOperand = false;
+        operationComplete = false
+        firstNumber = finalAnswer;
+        secondNumber = undefined;
+        screenExtra.textContent = `${firstNumber} ${operand}`;
+        screenExtra.style.opacity = 1;
+        screenExtraShow = true;
+        atFirstNumber = false;
+        return
+    }
+
     if (operand === "=" && atFirstNumber === true)
         return
 
@@ -90,6 +110,7 @@ function inputOperator(operand) {
         screenExtraShow = true;
         atFirstNumber = false;
     } else if (operationComplete === true && operand !== "=") {
+        completeToOperand = false;
         operationComplete = false
         firstNumber = finalAnswer;
         finalAnswer = undefined;
@@ -109,18 +130,20 @@ function inputOperator(operand) {
         } else {
             secondNumber = screenBottom.textContent
             screenExtra.textContent += ` ${secondNumber}`;
+            // alert(screenExtra.textContent)
             screenExtra.style.opacity = 1;
             screenExtraShow = true;
             let equation = screenExtra.textContent.split(" ");
             let finalOperand = equation[equation.length -2]
+            // alert(finalOperand)
             operationComplete = true;
             equalsOperation(Number(firstNumber), Number(secondNumber), finalOperand)
     }}
 };
 
 function equalsOperation(a, b, operand) {
-    const screenBottom = document.querySelector(".screen-bottom")
-    const screenExtra = document.querySelector(".screen-extra")
+    let screenBottom = document.querySelector(".screen-bottom")
+    let screenExtra = document.querySelector(".screen-extra")
     if (operand === "÷") {
         screenBottom.textContent = divide(a, b)
     } else if (operand === "×") {
@@ -131,8 +154,12 @@ function equalsOperation(a, b, operand) {
         screenBottom.textContent = add(a, b)
     }
     finalAnswer = screenBottom.textContent
+    // alert(finalAnswer)
     legacyOperator = operand
-}
+    if (operator !== "=") {
+        screenExtra = `${finalAnswer} ${operand}`
+        inputOperator(operandPressed)
+}}
 
 function add(a, b) {
     return a + b
