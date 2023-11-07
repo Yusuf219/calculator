@@ -15,6 +15,12 @@ let screenExtraShow = false;
 let operationComplete = false;
 let completeToOperand = false;
 
+document.addEventListener("keydown", function(event) {
+    if (event.key === "Backspace" && !event.repeat) {
+        deleteNumber()
+    }
+});
+
 buttons.forEach(button => {
     button.addEventListener("click", () => inputNumber(button.textContent));
 });
