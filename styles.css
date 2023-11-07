@@ -1,0 +1,62 @@
+.body {
+    display: flex;
+    margin-top: 128px;
+    justify-content: center;
+    align-items: center;
+}
+
+.calculator {
+    border: 2.5px solid;
+    border-radius: 12px;
+    padding: 16px;
+    gap: 16px;
+    background-color: rgb(230, 226, 226);
+}
+
+.screen {
+    padding: 10px;
+    margin-bottom: 16px;
+    border: 2.5px solid;
+    border-radius: 4px;
+    overflow: hidden;
+    height: 48px;
+    background-color: white;
+}
+
+.screen-extra, .screen-bottom {
+    overflow: hidden;
+    text-align: end;
+}
+
+.screen-bottom {
+    font-size: 30px;
+}
+
+.screen-extra {
+    opacity: 0;
+}
+
+.btn, .operator {
+    width: 60px;
+    height: 48px;
+    margin-bottom: 8px;
+    font-size: 24px;
+    background-color: rgb(223, 223, 255);
+}
+
+.clear, .delete {
+    width: 124px;
+    height: 48px;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    /* border-radius: 4px; */
+}
+
+.clear {
+    background-color: rgb(207, 207, 207);
+}
+
+.delete {
+    background-color: rgb(250, 129, 129);
+}
