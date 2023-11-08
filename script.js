@@ -10,6 +10,7 @@ let finalAnswer = undefined;
 let legacyOperator = undefined;
 let operandPressed = undefined;
 
+let extraAnswer = false;
 let atFirstNumber = true;
 let screenExtraShow = false;
 let operationComplete = false;
@@ -51,6 +52,7 @@ function clearAll() {
     legacyOperator = undefined;
     operandPressed = undefined;
 
+    extraAnswer = false;
     completeToOperand = false;
     atFirstNumber = true;
     screenExtraShow = false;
@@ -70,12 +72,15 @@ function inputNumber(number) {
         screenExtraShow = false
     }
     if (operationComplete === true) {
-        operationComplete = false
+        operationComplete = false;
         firstNumber = finalAnswer;
         finalAnswer = undefined;
         secondNumber = undefined;
         operandPressed = undefined;
         completeToOperand = false;
+        screenExtra.textContent = `${firstNumber} ${legacyOperator} ${number}`
+        legacyOperator = undefined;
+        extraAnswer = true;
     }
     if (screenBottom.textContent === "0" && number !== "." && screenExtraShow === false) {
         screenBottom.style.opacity = 1;
@@ -91,12 +96,14 @@ function inputOperator(operand) {
     const screenBottom = document.querySelector(".screen-bottom")
     const screenExtra = document.querySelector(".screen-extra")
     const lastCharacter = screenBottom.textContent.charAt(screenBottom.textContent.length - 1)
+    let equation = screenExtra.textContent.split(" ");
+    let finalOperand = equation[equation.length -2]
     operator = operand
     operandPressed = operand
     operators = ["÷", "×", "+", "-", "="]
     if (completeToOperand === true) {
         completeToOperand = false;
-        operationComplete = false
+        operationComplete = false;
         firstNumber = finalAnswer;
         secondNumber = undefined;
         screenExtra.textContent = `${firstNumber} ${operand}`;
@@ -134,22 +141,38 @@ function inputOperator(operand) {
             operationComplete = true;
             equalsOperation(Number(firstNumber), Number(secondNumber), legacyOperator)
         } else {
-            secondNumber = screenBottom.textContent
-            screenExtra.textContent += ` ${secondNumber}`;
-            // alert(screenExtra.textContent)
-            screenExtra.style.opacity = 1;
-            screenExtraShow = true;
-            let equation = screenExtra.textContent.split(" ");
-            let finalOperand = equation[equation.length -2]
-            // alert(finalOperand)
-            operationComplete = true;
-            equalsOperation(Number(firstNumber), Number(secondNumber), finalOperand)
-    }}
-};
+            if (extraAnswer !== true) {
+                secondNumber = screenBottom.textContent
+                screenExtra.textContent += ` ${secondNumber}`;
+                // alert(screenExtra.textContent)
+                screenExtra.style.opacity = 1;
+                screenExtraShow = true;
+                let equation = screenExtra.textContent.split(" ");
+                let finalOperand = equation[equation.length -2]
+                // alert(finalOperand)
+                operationComplete = true;
+                equalsOperation(Number(firstNumber), Number(secondNumber), finalOperand)
+            } else {
+                secondNumber = screenBottom.textContent
+                extraAnswer = false;
+                screenExtra.style.opacity = 1;
+                screenExtraShow = true;
+                let equation = screenExtra.textContent.split(" ");
+                let finalOperand = equation[equation.length -2]
+                // alert(finalOperand)
+                operationComplete = true;
+                equalsOperation(Number(firstNumber), Number(secondNumber), finalOperand)
+}}}};
 
 function equalsOperation(a, b, operand) {
     let screenBottom = document.querySelector(".screen-bottom")
     let screenExtra = document.querySelector(".screen-extra")
+    if (operand === "÷" && secondNumber === "0") {
+        clearAll()
+        alert("You cannot divide by 0.")
+        return
+    }
+
     if (operand === "÷") {
         screenBottom.textContent = divide(a, b)
     } else if (operand === "×") {
